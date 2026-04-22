@@ -1,5 +1,6 @@
 # 📝 Task Manager Application
 
+
 A full-stack Task Manager application built using **Spring Boot**, featuring **JWT-based authentication**, secure REST APIs, and a responsive frontend interface.
 
 This project demonstrates key backend engineering concepts such as **stateless authentication, role-based authorization, input validation, and scalable API design**, along with seamless frontend-backend integration.
@@ -29,7 +30,7 @@ This project demonstrates key backend engineering concepts such as **stateless a
 
 ### ✅ Validation
 
-* Input validation using Jakarta Validation (`@Valid`, `@NotBlank`)
+* Input validation using Jakarta Validation (`@Valid`, `@NotBlank`, `@Email`)
 * Structured error handling
 
 ### 🎨 Frontend
@@ -54,7 +55,7 @@ This project demonstrates key backend engineering concepts such as **stateless a
 
 ## 🗄️ Database
 
-* PostgreSQL used for schema design and query validation
+* PostgreSQL is used as the primary database for storing users and tasks.
 
 ### Tables
 
@@ -151,6 +152,8 @@ After starting the backend:
 * Stateless session management
 * Protected endpoints using Spring Security
 * Role-based access control
+* JWT token must be passed in Authorization header:
+  Authorization: Bearer <token>
 
 ---
 

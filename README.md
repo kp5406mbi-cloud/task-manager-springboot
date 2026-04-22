@@ -180,6 +180,14 @@ Password: test123
 
 ---
 
+## Scalability Considerations
+
+- Stateless authentication using JWT enables horizontal scaling
+- Database can be scaled using replication and indexing
+- Microservices architecture can separate auth and task services
+- Caching (Redis) can reduce database load
+- Load balancers can distribute traffic across instances
+
 ## 👨‍💻 Author
 
 **Kumar Piyush**

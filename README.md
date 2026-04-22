@@ -185,14 +185,8 @@ Password: test123
 **Kumar Piyush**
 Mathematics and Computing, BIT Mesra
 
----
 
-## ✅ Status
 
-✔ Backend implemented
-✔ Frontend integrated
-✔ Full CRUD functionality
-✔ Secure authentication
-✔ Ready for evaluation
 
----
+
+

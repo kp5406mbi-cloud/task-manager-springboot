@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .full-btn {
+            width: 100%;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            margin-left: 8px;
+        }
+
+        .delete-btn:hover {
+            background: #b52a37;
+        }
+
+        .logout {
+            background: #dc3545;
+            width: 100%;
+        }
+
+        .task-card {
+            background: #f4f7ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .response-box {
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+            text-align: center;
+        }
+
+        .success {
+            background: #e6ffed;
+            color: #1a7f37;
+        }
+
+        .empty-state {
+    text-align: center;
+    color: #666;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+        .error {
+            background: #ffe6e6;
+            color: #d93025;
+        }
+
+        .link {
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+    <h1>Task Manager</h1>
+
+    <!-- RESPONSE -->
+    <div id="responseBox" class="response-box"></div>
+
+    <!-- LOGIN -->
+    <div id="loginSection">
+        <input id="loginUsername" placeholder="Username">
+        <input id="loginPassword" type="password" placeholder="Password">
+        <button class="full-btn" onclick="login()">Login</button>
+
+        <p>Not registered?
+            <span class="link" onclick="showRegister()">Register</span>
+        </p>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerSection" style="display:none;">
+        <input id="regUsername" placeholder="Username">
+        <input id="regPassword" type="password" placeholder="Password">
+        <button class="full-btn" onclick="register()">Register</button>
+
+        <p>Already registered?
+            <span class="link" onclick="showLogin()">Login</span>
+        </p>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" style="display:none;">
+
+        <button class="logout" onclick="logout()">Logout</button>
+
+        <h3>Create / Update Task</h3>
+        <input id="title" placeholder="Title">
+        <input id="description" placeholder="Description">
+        <button class="full-btn" onclick="createTask()">Save Task</button>
+
+        <h3>Your Tasks</h3>
+        <button class="full-btn" onclick="getTasks()">Fetch Tasks</button>
+        <div id="taskList"></div>
+
+    </div>
+
+
+</div>
+
+<script>
+
+    const API = "http://localhost:8080/api/v1";
+    let editId = null;
+
+    function showResponse(msg, ok = true) {
+        const box = document.getElementById("responseBox");
+        box.style.display = "block";
+        box.className = "response-box " + (ok ? "success" : "error");
+        box.innerText = msg;
+
+        setTimeout(() => box.style.display = "none", 2000);
+    }
+
+    function showRegister() {
+        loginSection.style.display = "none";
+        registerSection.style.display = "block";
+    }
+
+    function showLogin() {
+        registerSection.style.display = "none";
+        loginSection.style.display = "block";
+    }
+
+    function showDashboard() {
+        loginSection.style.display = "none";
+        registerSection.style.display = "none";
+        dashboard.style.display = "block";
+    }
+
+    async function register() {
+        const res = await fetch(`${API}/auth/register`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                username: regUsername.value,
+                password: regPassword.value,
+                role: "USER"
+            })
+        });
+
+        if (res.ok) {
+            showResponse("Registered successfully");
+            showLogin();
+        } else {
+            showResponse("Registration failed", false);
+        }
+    }
+
+    async function login() {
+        const res = await fetch(`${API}/auth/login`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                username: loginUsername.value,
+                password: loginPassword.value
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.token) {
+            localStorage.setItem("token", data.token);
+            showDashboard();
+            showResponse("Login successful");
+        } else {
+            showResponse("Login failed", false);
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem("token");
+        dashboard.style.display = "none";
+        showLogin();
+        showResponse("Logged out");
+    }
+
+    async function createTask() {
+        const token = localStorage.getItem("token");
+
+        let url = `${API}/tasks`;
+        let method = "POST";
+
+        if (editId !== null) {
+            url = `${API}/tasks/${editId}`;
+            method = "PUT";
+        }
+
+        const res = await fetch(url, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                title: title.value,
+                description: description.value
+            })
+        });
+
+        if (res.ok) {
+            showResponse(editId ? "Task updated" : "Task created");
+
+            editId = null;
+            title.value = "";
+            description.value = "";
+
+            getTasks();
+        } else {
+            showResponse("Operation failed", false);
+        }
+    }
+
+    async function getTasks() {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(`${API}/tasks`, {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        const data = await res.json();
+
+        taskList.innerHTML = "";
+
+        if (data.length === 0) {
+    taskList.innerHTML = "<p class='empty-state'>No tasks found</p>";
+    return;
+}
+
+        data.forEach(task => {
+            const div = document.createElement("div");
+            div.className = "task-card";
+
+            const safeTitle = task.title.replace(/'/g, "\\'");
+            const safeDesc = task.description.replace(/'/g, "\\'");
+
+            div.innerHTML = `
+                <strong>${task.title}</strong><br>
+                <small>${task.description}</small><br><br>
+
+                <button onclick="editTask(${task.id}, '${safeTitle}', '${safeDesc}')">Edit</button>
+                <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+            `;
+
+            taskList.appendChild(div);
+        });
+    }
+
+    function editTask(id, titleText, descText) {
+        editId = id;
+        title.value = titleText;
+        description.value = descText;
+        showResponse("Editing task...");
+    }
+
+    async function deleteTask(id) {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(`${API}/tasks/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        if (res.ok) {
+            showResponse("Task deleted");
+            getTasks();
+        } else {
+            showResponse("Delete failed", false);
+        }
+    }
+
+</script>
+
+</body>
+</html>

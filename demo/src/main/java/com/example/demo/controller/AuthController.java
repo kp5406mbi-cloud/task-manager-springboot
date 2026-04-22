@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
+    public String register(@Valid @RequestBody User user) {
 
         if (user.getRole() == null) {
             user.setRole("USER"); // fallback safety
@@ -43,16 +45,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@Valid @RequestBody User user) {
 
         return userRepository.findFirstByUsername(user.getUsername())
                 .map(existingUser -> {
                     if (passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
 
-                        String token = jwtUtil.generateToken(
-                                existingUser.getUsername(),
-                                existingUser.getRole()
-                        );
+
+                        String token = jwtUtil.generateToken(existingUser.getUsername(), existingUser.getRole());
+
 
 
 

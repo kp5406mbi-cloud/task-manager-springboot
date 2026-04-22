@@ -34,6 +34,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
 
+                        // ✅ STATIC FILES
                         .requestMatchers(
                                 "/",
                                 "/index.html",
@@ -43,13 +44,13 @@ public class SecurityConfig {
                                 "/images/**"
                         ).permitAll()
 
-                        // ✅ PROTECTED TASK APIs
-                        .requestMatchers("/api/v1/tasks/**").authenticated()
-
                         // ✅ ADMIN ONLY
-                        .requestMatchers("/api/v1/auth/admin").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 
-                        // ✅ ALL OTHERS
+                        // ✅ USER + ADMIN
+                        .requestMatchers("/api/v1/tasks/**").hasAnyRole("USER", "ADMIN")
+
+                        // ✅ EVERYTHING ELSE
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

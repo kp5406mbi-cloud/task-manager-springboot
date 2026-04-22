@@ -18,6 +18,7 @@ public class Task {
 
     @NotBlank(message = "Title is required")
     @Column(nullable = false)
+    @NotBlank
     private String title;
 
     @NotBlank(message = "Description is required")

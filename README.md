@@ -2,7 +2,7 @@
 
 A full-stack Task Manager application built using **Spring Boot**, featuring **JWT-based authentication**, secure REST APIs, and a responsive frontend interface.
 
-This project demonstrates key backend engineering concepts such as **stateless authentication, role-based authorization, and scalable API design**, along with seamless frontend-backend integration.
+This project demonstrates key backend engineering concepts such as **stateless authentication, role-based authorization, input validation, and scalable API design**, along with seamless frontend-backend integration.
 
 ---
 
@@ -15,12 +15,22 @@ This project demonstrates key backend engineering concepts such as **stateless a
 * JWT-based Authentication
 * Secure API access using tokens
 
+### 🔒 Authorization
+
+* Role-based access control (USER vs ADMIN)
+* ADMIN endpoints are protected and accessible only with appropriate roles
+
 ### 📋 Task Management
 
 * Create Task
 * Fetch All Tasks
 * Update Task
 * Delete Task
+
+### ✅ Validation
+
+* Input validation using Jakarta Validation (`@Valid`, `@NotBlank`)
+* Structured error handling
 
 ### 🎨 Frontend
 
@@ -32,29 +42,35 @@ This project demonstrates key backend engineering concepts such as **stateless a
 
 ---
 
-## 🛠 Tech Stack
+## 🛠️ Tech Stack
 
-### Backend
+* Backend: Spring Boot
+* Security: Spring Security + JWT
+* Database: PostgreSQL
+* Frontend: HTML, CSS, JavaScript
+* API Testing: Swagger, Postman
 
-* Java
-* Spring Boot
-* Spring Security
-* JWT (JSON Web Tokens)
-* Spring Data JPA
+---
 
-### Frontend
+## 🗄️ Database
 
-* HTML
-* CSS
-* JavaScript (Vanilla)
+* PostgreSQL used for schema design and query validation
 
-### Database
+### Tables
 
-* PostgreSQL / H2 (mention whichever you used)
+**Users Table**
 
-### API Testing
+* id (Primary Key)
+* username
+* password (hashed)
+* role (USER / ADMIN)
 
-* Swagger UI
+**Tasks Table**
+
+* id (Primary Key)
+* title
+* description
+* user_id (Foreign Key)
 
 ---
 
@@ -138,6 +154,13 @@ After starting the backend:
 
 ---
 
+## 🧪 API Testing
+
+* Swagger UI
+* Postman
+
+---
+
 ## 📸 Screenshots
 
 ### 🔐 Login Page
@@ -154,47 +177,27 @@ After starting the backend:
 
 ---
 
-## 🔐 Demo Credentials
-
-Username: testuser
-Password: test123
-
----
-
 ## 📈 Scalability Considerations
 
 * Stateless authentication using JWT enables horizontal scaling
-* Can be extended with:
-
-  * Redis (caching)
-  * PostgreSQL (production DB)
-  * Docker (containerization)
-  * Load balancing for high traffic systems
+* Database can be scaled using replication and indexing
+* Microservices architecture can separate auth and task services
+* Caching (Redis) can reduce database load
+* Load balancers can distribute traffic across instances
 
 ---
 
-## 🧪 Testing
+## 🚀 Deployment
 
-* APIs tested using Swagger UI
-* Frontend tested via browser
+The application can be deployed using platforms like **Render** or **Railway** for backend hosting.
 
 ---
-
-## Scalability Considerations
-
-- Stateless authentication using JWT enables horizontal scaling
-- Database can be scaled using replication and indexing
-- Microservices architecture can separate auth and task services
-- Caching (Redis) can reduce database load
-- Load balancers can distribute traffic across instances
 
 ## 👨‍💻 Author
 
 **Kumar Piyush**
 Mathematics and Computing, BIT Mesra
 
-
-
-
+---
 
 

@@ -16,9 +16,9 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title is required")
+
     @Column(nullable = false)
-    @NotBlank
+    @NotBlank(message = "Title is required")
     private String title;
 
     @NotBlank(message = "Description is required")

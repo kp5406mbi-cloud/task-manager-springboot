@@ -142,15 +142,15 @@ After starting the backend:
 
 ### 🔐 Login Page
 
-![Login](screenshots/login.png)
+![Login](login.png)
 
 ### 📊 Dashboard
 
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](dashboard.png)
 
 ### 📋 Tasks
 
-![Tasks](screenshots/tasks.png)
+![Tasks](tasks.png)
 
 ---
 
